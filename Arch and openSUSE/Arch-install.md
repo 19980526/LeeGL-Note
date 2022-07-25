@@ -1,5 +1,5 @@
 <!-- 在VirtualBox虚拟机下ArchLinux安装 -->
-# ArhcLinux 安装  
+# ArchLinux 安装  
 
 ## 准备
 
@@ -440,7 +440,7 @@
     cd ProgfamFiles
     git clone https://git.suckless.org/dwm
     git clone https://git.suckless.org/st
-    git clone https://git.suckless.org/st
+    git clone https://git.suckless.org/dmenu
     ~~~
 
     > 这里如果git clone的很慢 可以修改下hosts 并重启
@@ -462,9 +462,9 @@
     cd dwm
     sudo make clean install
     cd ../st
-    sudo make clean st
+    sudo make clean install
     cd ../dmenu
-    sudo make clean dmenu
+    sudo make clean install
 
     sudo pacman -S xorg-xinit feh udisks2 udiskie pcmanfm
     ~~~
@@ -501,6 +501,8 @@
     neofetch
     ~~~
 
+    > 这样每次打开新终端都没显示终端信息
+    
     查看硬件信息
 
     ~~~shell

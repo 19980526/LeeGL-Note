@@ -4,7 +4,7 @@
 ## 准备
 
 1. 下载[ArchLinux镜像](https://archlinux.org/download/)
-
+    > 实体机这里将镜像放到ventoy格式化好的u盘下
 2. VirtualBox --> 新建虚拟电脑
     1. 名称 --> Arch01
     2. 内存 --> 8192MB
@@ -16,15 +16,16 @@
     7. 存储 --> 添加虚拟光驱 --> 注册 --> 选中镜像archlinux-x86_64.ios文件
     8. 网络 --> 网卡1 NAT(默认) --> 网卡2 --> 启动网络连接 --> 连接方式 --> 仅主机(Host-only)网络
 
-3. 启动(若过程中有弹出窗口 --> 取消) --> 进入到GRUB引导界面 --> Arch Linux install medium --> 进入命令行(root@archiso ` #)(此时无法ssh 需要在命令行操作 这时候命令没有提示无法复制粘贴)
+3. 启动(若过程中有弹出窗口 --> 取消) --> 进入到引导界面 --> Arch Linux install medium --> 进入命令行(root@archiso ` #)(此时无法ssh 需要在命令行操作 这时候命令没有提示无法复制粘贴)
 4. ip a(确定两个网卡 网卡1:enp0s3和网卡2:enp0s8)(如果只有一个 --> 宿主机windows11下 --> 网络和lnternet -->高级网络设置 -->查看是否有VirtualBox Host-Only Network这个网络适配器)
 
 ## 配置软件源
 
 1. `setfont ter-132n`(调整下命令行字体大小 若显示太多内容 --> Ctrl+L清屏)
-2. `ping -c 10 baidu.com`(查看下是否有网络)(实体机使用iwctl连接wifi)
+2. `ping -c 10 baidu.com`(查看下是否有网络)(实体机使用iwctl连接wifi 无线网卡服务需要打开rfkill unblock wifi)
     > iwctl --> device list (查看无线网卡列表)--> station + 无线网卡name + scan(搜索wifi) --> station + 无线网卡name + get-networks --> station +无线网卡name + connect +wifi名 -->输入wifi密码
 
+    > dhcpcd 分配下ip地址
 3. 修改镜像源(通过修改/etc/pacman.d/mirrorlist或者自动搜索并添加)  
     这里自动搜索
 
@@ -32,7 +33,7 @@
     reflector -c China -a 5 --sort rate --save /etc/pacman.d/mirrorlist
     ```
 
-    > -c 国家 -a 需要源的数量 --sort rate 速度排序 --save 写入覆盖 执行后确定下mirrorlist是否被修改了
+    > -c 国家 -a 需要源的数量 --sort rate 速度排序 --save 写入覆盖 执行后确定下mirrorlist是否被修改了 这里可能会超时
 
 4. 同步下源  
 
@@ -71,6 +72,7 @@
     swapon /dev/sda3
     lsblk
     ```
+    > 这里实体机安装时 /mnt/boot/efi 挂载到 windows 的efi同一磁盘下
 
     > swapon /dev/sda3这里为打开交换分区
 
@@ -83,7 +85,9 @@
    pacstrap /mnt linux linux-firmware linux-headers base base-devel vim bash-completion
     ```
 
-  > pacstrap是一个安装脚本 /mnt表示安装在sda2中 linux为最新版或安装linux-lts为稳定版 linux-firware和linux-headers为固件和头文件 base和base-devel为基础包和开发基础包 vim是一个文本编辑器 bash-completion为命令自动补全
+    > pacstrap是一个安装脚本 /mnt表示安装在sda2中 linux为最新版或安装linux-lts为稳定版 linux-firware和linux-headers为固件和头文件 base和base-devel为基础包和开发基础包 vim是一个文本编辑器 bash-completion为命令自动补全
+  
+    > pacman -S archlinux-keyring 如果安装出现错误可以检查下是否安装PGP密钥
 
 2. 生成fstab文件
 
@@ -113,6 +117,8 @@
    umount /mnt
    reboot
     ```
+
+    >实体机安装时这里指定下架构 例如 grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=arch 将启动项取名为arch 启动类型为efi的64位系统 系统启动位置在 /efi
 
     > 进入 /mnt 即进入主分区已安装好的系统中 此时root@... `变为root@.../即成功 grub efibootmgr efivar为grub启动引导所需要的包networkmanager为网络管理 amd-ucode这里是cpu微代码 根据cpu为inter或amd安装不同的包 虚拟机使用的cpu和宿主机一样 grub-install /dev/sda 这里是将archlinux设为grep启动项(例如实体机为双系统 这里可以选择和切换) 如果这里如果出现报错大概率是在设置虚拟机时没有开启EFI grub-mkconfig -o /boot/grub/grub.cfg这里是生成grub的配置文件写入到指定目录 systemctl enable NetworkManager这里为开机启动网络服务 passwd这里为设置root用户密码 需要输入两次 exit退出系统 umount /mnt/boot/efih和 umount /mnt这里为卸载分区 reboot重启 pacman -S 这里的参数-S 为安装
     这里vim修改下grup启动引导的时间 默认5秒 GRUB_TIMEOUT=5 将loglevel=3 quiet 去掉quiet 可以查看grup的报错日志 i进入编辑模式 wq保存退出
@@ -239,6 +245,7 @@
     ```
 
     > xorg是一个组合包 包含字体驱动之类 (为了简约(可以安装xorg-server)后续我们需要安装dwm这里安装xorg) 它的作用是处理硬件和桌面环境交互 无论安装任何桌面环境还是窗口管理器都需要
+
 9. 安装字体
 
     ```shell
@@ -469,6 +476,8 @@
     sudo pacman -S xorg-xinit feh udisks2 udiskie pcmanfm
     ~~~
 
+    >dwm是用c写的
+
     >  xorg-xinit开启xorg协议 feh设置壁纸 udisks2 udiskie usb相关 pcmanfm文件管理器
 
     ~~~shell
@@ -686,14 +695,19 @@
 
         > 这里规定了文泉驿雅黑和图标在status bar(状态栏)中的字体显示
         > 完成操作后重新安装make clean install
+
     5. 工作空间图标配置(可以忽略)
+
         > dwm默认9个工作区 以数字为工作区名 这里可以通过修改配置文件 修改数量 或通过矢量图标修改工作区默认名
         这里通过[nerdfonts --> 它包含大部分常用的图标](https://www.nerdfonts.com/cheat-sheet) 搜索相关矢量图标 -->选择 点击icon 就会复制到粘贴板
 
         修改sudo vim /home/leegl/ProgramFiles/dwm/config.h配置文件中(修改完需要重现安装)
         static const char *tags={}:这个数组 替换掉默认的"1" "2" "3"修改图标或者数量
+
     6. 使用slstatus 配置status bar(状态栏)
+
         > slstatus是dwm官方提供的一个可以修改状态栏的工具
+
         > 下载slstatus --> 在和dwm st同级目录下 这里是ProgramFiles
 
         下载安装
@@ -716,7 +730,9 @@
 
         退出dwm并重新启动
         > 此时状态栏由显示dwm版本 改为 显示当前 时间 这里表示slstatus已经生效 显示时间是slstatus的默认设置 通过修改在目录 vim /slstatus/config.h下可以添加或修改设置
+
     7. 为状态栏添加彩色表情emoji(可以忽略)
+    
         > 安装JoyPixels
 
        ~~~shell

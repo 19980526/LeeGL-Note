@@ -510,7 +510,7 @@
     neofetch
     ~~~
 
-    > 这样每次打开新终端都没显示终端信息
+    > 这样每次打开新终端都会显示终端信息
     
     查看硬件信息
 
@@ -557,7 +557,7 @@
     alt + m 窗口之间改为叠加(全屏下叠加)
 
     ~~~shell
-    xrandr --output Virtual -1 --mode 1920x1080 --rate 60.0011
+    xrandr --output Virtual -1 --mode 1920x1080 --rate 60.00
     ~~~
 
 4. 配置dwm
@@ -725,7 +725,7 @@
 
         ~~~vim
         # status bar
-        exec slstaus &
+        exec slstatus &
         ~~~
 
         退出dwm并重新启动
@@ -907,11 +907,11 @@
         patch  < st-xresources-20200604-9ba7ecf.diff
         git add config.def.h x.c
         git commit -m xresources
-        git chechout master
+        git checkout master
         git merge config -m config
         git merge alpha -m alpha
         git merge anysize -m anysize
-        git merge merge blinking_cursor -m blinking_cursor
+        git merge blinking_cursor -m blinking_cursor
         ~~~
 
         > 这里合并分支提示出现错误 错误来自于config.def.h

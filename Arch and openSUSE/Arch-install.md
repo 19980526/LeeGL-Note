@@ -72,6 +72,7 @@
     swapon /dev/sda3
     lsblk
     ```
+
     > 这里实体机安装时 /mnt/boot/efi 挂载到 windows 的efi同一磁盘下
 
     > swapon /dev/sda3这里为打开交换分区
@@ -511,7 +512,7 @@
     ~~~
 
     > 这样每次打开新终端都会显示终端信息
-    
+
     查看硬件信息
 
     ~~~shell
@@ -732,7 +733,7 @@
         > 此时状态栏由显示dwm版本 改为 显示当前 时间 这里表示slstatus已经生效 显示时间是slstatus的默认设置 通过修改在目录 vim /slstatus/config.h下可以添加或修改设置
 
     7. 为状态栏添加彩色表情emoji(可以忽略)
-    
+
         > 安装JoyPixels
 
        ~~~shell
@@ -945,4 +946,31 @@
 
         ~~~shell
         xrdb ~/.Xresources
+        ~~~
+
+        例如
+
+        ~~~shell
+        # theme
+        *.color0: "#3b4252"
+        *.color1: "#bf616a"
+        *.color2: "#a3be8c"
+        *.color3: "#ebcb8b"
+        *.color4: "#81a1c1"
+        *.color5: "#b48ead"
+        *.color6: "#88c0d0"
+        *.color7: "#e5e9f0"
+        *.color8: "#4c566a"
+        *.color9: "#bf616a"
+        *.color10: "#a3be8c"
+        *.color11: "#ebcb8b"
+        *.color12: "#81a1c1"
+        *.color13: "#b48ead"
+        *.color14: "#8fbcbb"
+        *.color15: "#eceff4"
+        *.background: "#2e3440"
+        *.foreground: "#d8dee9"
+        *.color256: "#cccccc"
+        *.color257: "#555555"
+
         ~~~

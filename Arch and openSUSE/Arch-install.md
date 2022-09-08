@@ -5,18 +5,27 @@
 
 1. 下载[ArchLinux镜像](https://archlinux.org/download/)
     > 实体机这里将镜像放到ventoy格式化好的u盘下
-2. VirtualBox --> 新建虚拟电脑
-    1. 名称 --> Arch01
-    2. 内存 --> 8192MB
-    3. 虚拟硬盘 --> 类型VDI(只适用于VitrualBox,类型VMDK可以在其他虚拟机(例如VM Ware)使用) --> 固定大小100.00GB
+2. VirtualBox --> 新建虚拟电脑  
 
-    4. 选择创建好的虚拟机项目 --> 设置 --> 常规 --> 高级 --> 开启共享粘贴板
-    5. 系统 --> 启动顺序 光驱>硬盘 --> 启动EFI --> 处理器 --> 8
-    6. 显存大小 --> 最大
-    7. 存储 --> 添加虚拟光驱 --> 注册 --> 选中镜像archlinux-x86_64.ios文件
-    8. 网络 --> 网卡1 NAT(默认) --> 网卡2 --> 启动网络连接 --> 连接方式 --> 仅主机(Host-only)网络
+    名称 --> Arch01  
 
-3. 启动(若过程中有弹出窗口 --> 取消) --> 进入到引导界面 --> Arch Linux install medium --> 进入命令行(root@archiso ` #)(此时无法ssh 需要在命令行操作 这时候命令没有提示无法复制粘贴)
+    内存 --> 8192MB  
+
+    虚拟硬盘 --> 类型VDI(只适用于VitrualBox,类型VMDK可以在其他虚拟机(例如VM Ware)使用) --> 固定大小100.00GB  
+
+    选择创建好的虚拟机项目 --> 设置 --> 常规 --> 高级 --> 开启共享粘贴板  
+
+    系统 --> 启动顺序 光驱>硬盘 --> 启动EFI --> 处理器 --> 8
+
+    显存大小 --> 最大  
+
+    存储 --> 添加虚拟光驱 --> 注册 --> 选中镜像archlinux-x86_64.ios文件  
+
+    网络 --> 网卡1 NAT(默认) --> 网卡2 --> 启动网络连接 --> 连接方式 --> 仅主机(Host-only)网络
+
+3. 启动(若过程中有弹出窗口 --> 取消) --> 进入到引导界面 --> Arch Linux install medium --> 进入命令行(root@archiso ~ #)  
+    > 这里可以通过输入ip a查到ip地址后 为这个引导系统设置root密码 用宿主机ssh连接
+
 4. ip a(确定两个网卡 网卡1:enp0s3和网卡2:enp0s8)(如果只有一个 --> 宿主机windows11下 --> 网络和lnternet -->高级网络设置 -->查看是否有VirtualBox Host-Only Network这个网络适配器)
 
 ## 配置软件源
@@ -58,7 +67,7 @@
 
     ```shell
     mkfs.vfat /dev/sda1
-    mkfs.xfs /dev/sda2
+    mkfs.ext4 /dev/sda2
     mkswap /dev/sda3
     ```
 

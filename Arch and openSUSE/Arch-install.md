@@ -133,7 +133,9 @@
     > 进入 /mnt 即进入主分区已安装好的系统中 此时root@... `变为root@.../即成功 grub efibootmgr efivar为grub启动引导所需要的包networkmanager为网络管理 amd-ucode这里是cpu微代码 根据cpu为inter或amd安装不同的包 虚拟机使用的cpu和宿主机一样 grub-install /dev/sda 这里是将archlinux设为grep启动项(例如实体机为双系统 这里可以选择和切换) 如果这里如果出现报错大概率是在设置虚拟机时没有开启EFI grub-mkconfig -o /boot/grub/grub.cfg这里是生成grub的配置文件写入到指定目录 systemctl enable NetworkManager这里为开机启动网络服务 passwd这里为设置root用户密码 需要输入两次 exit退出系统 umount /mnt/boot/efih和 umount /mnt这里为卸载分区 reboot重启 pacman -S 这里的参数-S 为安装
     这里vim修改下grup启动引导的时间 默认5秒 GRUB_TIMEOUT=5 将loglevel=3 quiet 去掉quiet 可以查看grup的报错日志 i进入编辑模式 wq保存退出
 
-## 配置系统
+## 配置系统(这里已经退出了引导系统)
+
+> 这里如果想ssh 需要安装openssh(5) 开启ssh服务后 修改/etc/ssh/sshd_config 文件 找到PermitRootLogin(可能默认是注释掉的) 添加或修改为PermitRootLogin yes 这里是因为linux默认不允许ssh root用户 这里ip a下ip地址可能会变
 
 1. 确定网络
 
@@ -164,7 +166,7 @@
     ```shell
    timedatectl set-timezone Asia/Shanghai
    timedatectl set-ntp true
-   timdatectl status
+   timedatectl status
    reboot
     ```
 
@@ -182,7 +184,13 @@
    reboot
     ```
 
-    > 例如添加一个名为leegl的用户 1.0 useradd --create-home leegl这里 --create-home 会生成一个同名的目录存放用户配置 root用户和标准用户类似vscode全局配置和工作区配置的区别 2.0 usermod -aG wheel,users,storage,power,lp,adm,optical leegl 这里的参数-aG a代表添加append G代表组 wheel,users,storage,power,lp,adm,optical为组名称 最后 + 用户名 然后id leegl查看是否加入组中 visudo 编辑sudo的配置文件 找到这里# %wheel ALL=(ALL) ALL去掉注释 这里的作用是使标准用户正常使用sudo 在此之前如果没有将vim设为默认编辑器 可以export EDITOR=vim
+    > 例如添加一个名为leegl的用户 1.0 useradd --create-home leegl这里 --create-home 会生成一个同名的目录存放用户配置 root用户和标准用户类似vscode全局配置和工作区配置的区别 2.0 usermod -aG wheel,users,storage,power,lp,adm,optical leegl 这里的参数-aG a代表添加append G代表组 wheel,users,storage,power,lp,adm,optical为组名称 最后 + 用户名 然后id leegl查看是否加入组中 visudo 编辑sudo的配置文件 找到这里# %wheel ALL=(ALL) ALL去掉注释 这里的作用是使标准用户正常使用sudo 在此之前如果没有将vim设为默认编辑器 可以export EDITOR=vim  
+
+    > 这里可以也可以安装下vi  
+
+    ```shell
+    sudo pacman -S vi
+    ```
 
 5. 配置ssh(实体机可以忽略)
     > 重启后会提示登陆用户 这里使用标注用户例如leegl登录
@@ -359,7 +367,7 @@
            makepkg -si
            ~~~
 
-    2. 添加archlinuxcn源 通过pacman安装
+    2. 添加archlinuxcn源 通过pacman安装(这里参考[清华大学开源软件镜像站](https://mirror.tuna.tsinghua.edu.cn/help/archlinuxcn/))
 
         ~~~shell
         sudo vim /etc/pacman.conf
@@ -404,10 +412,11 @@
         sudo pacman -S archlinuxcn-keyring
          ~~~
 
-        安装 paru
+        安装 paru或yay(检索软件包 --> yay 关键字 安装软件包 --> yay -S 软件包)
 
         ~~~shell
         sudo pacman -S paru
+        sudo pacman -S yay
          ~~~
 
          修改下配置文件(可以忽略)
